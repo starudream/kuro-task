@@ -1,0 +1,29 @@
+package main
+
+import (
+	"github.com/starudream/go-lib/cobra/v2"
+
+	"github.com/starudream/kuro-task/job"
+)
+
+var (
+	signCmd = cobra.NewCommand(func(c *cobra.Command) {
+		c.Use = "sign"
+		c.Short = "Run sign task"
+	})
+
+	signGameCmd = cobra.NewCommand(func(c *cobra.Command) {
+		c.Use = "game <account phone>"
+		c.Short = "Kuro game award"
+		c.RunE = func(cmd *cobra.Command, args []string) error {
+			_, err := job.SignGame(xGetAccount(args))
+			return err
+		}
+	})
+)
+
+func init() {
+	signCmd.AddCommand(signGameCmd)
+
+	rootCmd.AddCommand(signCmd)
+}
