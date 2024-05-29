@@ -1,6 +1,8 @@
 package kuro
 
 import (
+	"strconv"
+
 	"github.com/starudream/go-lib/core/v2/gh"
 
 	"github.com/starudream/kuro-task/config"
@@ -45,7 +47,7 @@ type Role struct {
 	IsDefault  bool   `json:"isDefault"`
 }
 
-func ListRole(gid string, account config.Account) ([]*Role, error) {
-	req := R(account).SetFormData(gh.MS{"gameId": gid})
+func ListRole(gid int, account config.Account) ([]*Role, error) {
+	req := R(account).SetFormData(gh.MS{"gameId": strconv.Itoa(gid)})
 	return Exec[[]*Role](req, "POST", "/gamer/role/list")
 }

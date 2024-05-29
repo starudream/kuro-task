@@ -4,7 +4,6 @@ import (
 	"cmp"
 	"fmt"
 	"slices"
-	"strconv"
 	"strings"
 
 	"github.com/starudream/go-lib/core/v2/slog"
@@ -13,12 +12,8 @@ import (
 	"github.com/starudream/kuro-task/config"
 )
 
-var SignGameNameById = map[string]string{
-	kuro.GameIdMC: "鸣潮",
-}
-
 type SignGameRecord struct {
-	GameId     string
+	GameId     int
 	GameName   string
 	ServerName string
 	RoleId     string
@@ -42,6 +37,10 @@ func (rs SignGameRecords) Success() string {
 }
 
 func SignGame(account config.Account) (SignGameRecords, error) {
+	_, err := kuro.GetUser(account)
+	if err != nil {
+		return nil, fmt.Errorf("get user error: %w", err)
+	}
 	roles, err := kuro.ListRole(kuro.GameIdMC, account)
 	if err != nil {
 		return nil, fmt.Errorf("list role error: %w", err)
@@ -70,12 +69,12 @@ func SignGameRoles(roles []*kuro.Role, account config.Account) (SignGameRecords,
 }
 
 func SignGameRole(role *kuro.Role, account config.Account) (record SignGameRecord, err error) {
-	record.GameId = strconv.Itoa(role.GameId)
+	record.GameId = role.GameId
 	record.ServerName = role.ServerName
 	record.RoleId = role.RoleId
 	record.RoleName = role.RoleName
 
-	gameName, ok := SignGameNameById[record.GameId]
+	gameName, ok := kuro.GameNames[record.GameId]
 	if !ok {
 		err = fmt.Errorf("game id %d not support", role.GameId)
 		return

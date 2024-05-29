@@ -40,8 +40,25 @@ func cronRun() error {
 
 func cronJob() {
 	for i := 0; i < len(config.C().Accounts); i++ {
+		cronForumAccount(config.C().Accounts[i])
 		cronGameAccount(config.C().Accounts[i])
 	}
+}
+
+func cronForumAccount(account config.Account) (msg string) {
+	records, err := job.SignForum(account)
+	if err != nil {
+		msg = fmt.Sprintf("%s: %v", records.Name(), err)
+		slog.Error(msg)
+	} else {
+		msg = account.Phone + " " + records.Success()
+		slog.Info(msg)
+	}
+	err = ntfy.Notify(context.Background(), msg)
+	if err != nil {
+		slog.Error("cron kuro notify error: %v", err)
+	}
+	return
 }
 
 func cronGameAccount(account config.Account) (msg string) {

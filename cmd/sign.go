@@ -12,6 +12,15 @@ var (
 		c.Short = "Run sign task"
 	})
 
+	signForumCmd = cobra.NewCommand(func(c *cobra.Command) {
+		c.Use = "forum <account phone>"
+		c.Short = "Kuro forum task"
+		c.RunE = func(cmd *cobra.Command, args []string) error {
+			_, err := job.SignForum(xGetAccount(args))
+			return err
+		}
+	})
+
 	signGameCmd = cobra.NewCommand(func(c *cobra.Command) {
 		c.Use = "game <account phone>"
 		c.Short = "Kuro game award"
@@ -23,6 +32,7 @@ var (
 )
 
 func init() {
+	signCmd.AddCommand(signForumCmd)
 	signCmd.AddCommand(signGameCmd)
 
 	rootCmd.AddCommand(signCmd)

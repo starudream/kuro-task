@@ -18,9 +18,17 @@ const (
 	SourceH5      = "h5"
 
 	CodeHasSigned = Code(1511)
-
-	GameIdMC = "3" // 鸣潮
 )
+
+const (
+	GameIdPNS = 2 // 战双
+	GameIdMC  = 3 // 鸣潮
+)
+
+var GameNames = map[int]string{
+	GameIdPNS: "战双",
+	GameIdMC:  "鸣潮",
+}
 
 type BaseResp[T any] struct {
 	Code Code   `json:"code"`
