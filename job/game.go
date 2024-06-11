@@ -41,11 +41,15 @@ func SignGame(account config.Account) (SignGameRecords, error) {
 	if err != nil {
 		return nil, fmt.Errorf("get user error: %w", err)
 	}
-	roles, err := kuro.ListRole(kuro.GameIdMC, account)
+	roles1, err := kuro.ListRole(kuro.GameIdMC, account)
 	if err != nil {
-		return nil, fmt.Errorf("list role error: %w", err)
+		return nil, fmt.Errorf("list role1 error: %w", err)
 	}
-	return SignGameRoles(roles, account)
+	roles2, err := kuro.ListRole(kuro.GameIdPNS, account)
+	if err != nil {
+		return nil, fmt.Errorf("list role2 error: %w", err)
+	}
+	return SignGameRoles(append(roles1, roles2...), account)
 }
 
 func SignGameRoles(roles []*kuro.Role, account config.Account) (SignGameRecords, error) {
