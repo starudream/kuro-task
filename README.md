@@ -47,11 +47,17 @@ Use "kuro-task [command] --help" for more information about a command.
 
 ### Account
 
+下载项目中 [geetest.html](./geetest.html) 文件，本地打开进行验证后，复制极验结果，并使用 `login` 命令。
+
+- [GeeTest](https://github.com/geetestweb/gt4-public-client-demo/blob/master/slide-popup.html)
+
 ```shell
 # list accounts
 kuro-task account list
-# add account from website token
+# add account from h5 website token
 kuro-task account add <account phone>
+# add account by phone verification code
+kuro-task account login <account phone>
 ```
 
 ### SignGame `库街区游戏签到`

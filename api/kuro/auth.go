@@ -9,21 +9,20 @@ type SendPhoneCodeData struct {
 	GeeTest bool `json:"geeTest"`
 }
 
-func SendPhoneCode(phone string) (*SendPhoneCodeData, error) {
-	req := R().SetFormData(gh.MS{"mobile": phone, "geeTestData": "{}"})
-	return Exec[*SendPhoneCodeData](req, "POST", "/user/getSmsCode")
-}
-
 type GeeTestData struct {
-	CaptchaId     string `json:"captcha_id"`
-	LotNumber     string `json:"lot_number"`
-	PassToken     string `json:"pass_token"`
-	GenTime       string `json:"gen_time"`
-	CaptchaOutput string `json:"captcha_output"`
+	CaptchaId     string `json:"captcha_id,omitempty"`
+	LotNumber     string `json:"lot_number,omitempty"`
+	PassToken     string `json:"pass_token,omitempty"`
+	GenTime       string `json:"gen_time,omitempty"`
+	CaptchaOutput string `json:"captcha_output,omitempty"`
 }
 
 func SendPhoneCodeGeeTest(phone string, geeTest *GeeTestData) (*SendPhoneCodeData, error) {
-	req := R().SetFormData(gh.MS{"mobile": phone, "geeTestData": json.MustMarshalString(geeTest)})
+	data := "{}"
+	if geeTest == nil {
+		data = json.MustMarshalString(geeTest)
+	}
+	req := R().SetFormData(gh.MS{"mobile": phone, "geeTestData": data})
 	return Exec[*SendPhoneCodeData](req, "POST", "/user/getSmsCode")
 }
 

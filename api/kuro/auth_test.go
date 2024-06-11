@@ -9,20 +9,8 @@ import (
 	"github.com/starudream/kuro-task/util"
 )
 
-func TestSendPhoneCode(t *testing.T) {
-	data, err := SendPhoneCode(config.C().FirstAccount().Phone)
-	testutil.LogNoErr(t, err, data)
-}
-
 func TestSendPhoneCodeGeeTest(t *testing.T) {
-	v := &GeeTestData{
-		CaptchaId:     "",
-		LotNumber:     "",
-		PassToken:     "",
-		GenTime:       "",
-		CaptchaOutput: "",
-	}
-	data, err := SendPhoneCodeGeeTest(config.C().FirstAccount().Phone, v)
+	data, err := SendPhoneCodeGeeTest(config.C().FirstAccount().Phone, nil)
 	testutil.LogNoErr(t, err, data)
 }
 
