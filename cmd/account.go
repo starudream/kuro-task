@@ -59,7 +59,13 @@ var (
 				return err
 			}
 
-			resp1, err := kuro.SendPhoneCodeGeeTest(phone, geetest)
+			account := config.Account{
+				Phone:   phone,
+				DevCode: util.RandString(util.CharsetHex, 40),
+				Source:  kuro.SourceAndroid,
+			}
+
+			resp1, err := kuro.SendPhoneCodeGeeTest(phone, geetest, account)
 			if err != nil {
 				return err
 			}
@@ -68,13 +74,7 @@ var (
 				return fmt.Errorf("wrong GeeTest validation")
 			}
 
-			account := config.Account{
-				Phone:   phone,
-				DevCode: util.RandString(util.CharsetHex, 40),
-				Source:  kuro.SourceAndroid,
-			}
-
-			resp2, err := kuro.LoginByPhoneCode(phone, fmtutil.Scan("please enter the verification code you received: "), account.DevCode)
+			resp2, err := kuro.LoginByPhoneCode(phone, fmtutil.Scan("please enter the verification code you received: "), account)
 			if err != nil {
 				return err
 			}
