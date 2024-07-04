@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"slices"
 	"strings"
+	"time"
 
 	"github.com/starudream/go-lib/core/v2/slog"
 
@@ -12,10 +13,27 @@ import (
 	"github.com/starudream/kuro-task/config"
 )
 
+const (
+	PostView  = 3
+	PostLike  = 5
+	PostShare = 1
+	PostLoop  = 3
+)
+
+var ForumByGame = map[int]int{
+	kuro.GameIdPNS: kuro.ForumIdPNS3,
+	kuro.GameIdMC:  kuro.ForumIdMC10,
+}
+
 type SignForumRecord struct {
 	GameId    int
 	GameName  string
 	HasSigned bool
+
+	PostView  int
+	PostLike  int
+	PostShare int
+	LoopCount int
 }
 
 type SignForumRecords []SignForumRecord
@@ -46,7 +64,7 @@ func SignForum(account config.Account) (SignForumRecords, error) {
 func SignForumGames(account config.Account) (SignForumRecords, error) {
 	var records []SignForumRecord
 	for id, name := range kuro.GameNames {
-		record, err := SignForumGame(kuro.GameIdMC, account)
+		record, err := SignForumGame(id, account)
 		record.GameId = id
 		record.GameName = name
 		slog.Info("sign forum record: %+v", record)
@@ -72,7 +90,7 @@ func SignForumGame(gid int, account config.Account) (record SignForumRecord, err
 	record.HasSigned = today.HasSignIn
 
 	if today.HasSignIn {
-		return
+		goto post
 	}
 
 	_, err = kuro.SignForum(gid, account)
@@ -81,7 +99,59 @@ func SignForumGame(gid int, account config.Account) (record SignForumRecord, err
 		return
 	}
 
-	// todo: daily task for forum posts
+post:
+
+	fid := ForumByGame[gid]
+
+	record.LoopCount++
+
+	posts, err := kuro.ListPost(gid, fid, record.LoopCount, account)
+	if err != nil {
+		err = fmt.Errorf("list post error: %w", err)
+		return
+	}
+
+	for i := 0; i < len(posts.PostList); i++ {
+		p := posts.PostList[i]
+		if record.PostView < PostView {
+			_, e := kuro.GetPost(p.PostId, account)
+			if e != nil {
+				slog.Error("get post error: %v", e)
+				continue
+			}
+			record.PostView++
+			time.Sleep(100 * time.Millisecond)
+		}
+		if record.PostLike < PostLike && p.IsLike == 0 {
+			e := kuro.LikePost(gid, fid, p.PostId, p.UserId, false, account)
+			if e != nil {
+				slog.Error("like post error: %v", e)
+				continue
+			}
+			time.Sleep(100 * time.Millisecond)
+			e = kuro.LikePost(gid, fid, p.PostId, p.UserId, true, account)
+			if e != nil {
+				slog.Error("unlike post error: %v", e)
+				continue
+			}
+			record.PostLike++
+			time.Sleep(100 * time.Millisecond)
+		}
+		if record.PostShare < PostShare {
+			e := kuro.SharePost(gid, account)
+			if e != nil {
+				slog.Error("share post error: %v", e)
+				continue
+			}
+			record.PostShare++
+			time.Sleep(100 * time.Millisecond)
+		}
+		time.Sleep(500 * time.Millisecond)
+	}
+
+	if record.LoopCount < PostLoop && (record.PostView < PostView || record.PostLike < PostLike || record.PostShare < PostShare) {
+		goto post
+	}
 
 	return
 }

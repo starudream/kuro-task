@@ -18,8 +18,9 @@ func TestListRole(t *testing.T) {
 	testutil.LogNoErr(t, err, data)
 }
 
-func GetFirstRole(t *testing.T) *Role {
-	data, err := ListRole(GameIdMC, config.C().FirstAccount())
+func GetFirstRole(t *testing.T) (*Role, config.Account) {
+	account := config.C().FirstAccount()
+	data, err := ListRole(GameIdMC, account)
 	testutil.LogNoErr(t, err, data)
-	return data[0]
+	return data[0], account
 }

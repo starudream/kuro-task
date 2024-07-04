@@ -17,3 +17,13 @@ func TestGetSignForum(t *testing.T) {
 	data, err := GetSignForum(GameIdMC, config.C().FirstAccount())
 	testutil.LogNoErr(t, err, data)
 }
+
+func TestGetForumTask(t *testing.T) {
+	data, err := GetForumTask(config.C().FirstAccount())
+	testutil.LogNoErr(t, err, data)
+}
+
+func TestGetForumGold(t *testing.T) {
+	data, err := GetForumGold(config.C().FirstAccount())
+	testutil.LogNoErr(t, err, data)
+}

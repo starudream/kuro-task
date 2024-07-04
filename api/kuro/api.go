@@ -25,6 +25,23 @@ const (
 	GameIdMC  = 3 // 鸣潮
 )
 
+const (
+	ForumIdPNS2 = 2 // 推荐
+	ForumIdPNS3 = 3 // 伊甸闲庭
+	ForumIdPNS4 = 4 // 攻略
+	ForumIdPNS5 = 5 // 同人
+
+	ForumIdMC9  = 9  // 推荐
+	ForumIdMC10 = 10 // 今州茶馆
+	ForumIdMC11 = 11 // 同人
+	ForumIdMC12 = 12 // 攻略
+	ForumIdMC15 = 15 // 新手
+)
+
+const (
+	GameMCCountryCodeHL = 1 // 瑝珑
+)
+
 var GameNames = map[int]string{
 	GameIdPNS: "战双",
 	GameIdMC:  "鸣潮",
