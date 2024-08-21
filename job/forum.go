@@ -69,7 +69,7 @@ func SignForumGames(account config.Account) (SignForumRecords, error) {
 		record.GameName = name
 		slog.Info("sign forum record: %+v", record)
 		if err != nil {
-			slog.Error("sign forum error: %w", err)
+			slog.Error("sign forum error: %v", err)
 			continue
 		}
 		records = append(records, record)

@@ -58,7 +58,7 @@ func SignGameRoles(roles []*kuro.Role, account config.Account) (SignGameRecords,
 		record, err := SignGameRole(role, account)
 		slog.Info("sign game record: %+v", record)
 		if err != nil {
-			slog.Error("sign game error: %w", err)
+			slog.Error("sign game error: %v", err)
 			continue
 		}
 		records = append(records, record)

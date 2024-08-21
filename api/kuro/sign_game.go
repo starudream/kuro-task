@@ -16,7 +16,7 @@ type Good struct {
 	Type      int    `json:"type,omitempty"`
 	GoodsName string `json:"goodsName"`
 	GoodsNum  int    `json:"goodsNum"`
-	GoodsId   int    `json:"goodsId"`
+	GoodsId   string `json:"goodsId"`
 	SigInDate string `json:"sigInDate,omitempty"`
 }
 
@@ -40,7 +40,7 @@ func (v1 Goods) ShortString() string {
 	return strings.Join(v2, ", ")
 }
 
-func (v1 Goods) ShortStringByMap(m map[int]*Good) string {
+func (v1 Goods) ShortStringByMap(m map[string]*Good) string {
 	v2 := make([]string, len(v1))
 	for i, v := range v1 {
 		v2[i] = m[v.GoodsId].GoodsName + "*" + strconv.Itoa(v.GoodsNum)
@@ -76,8 +76,8 @@ type ListSignGameData struct {
 	OmissionNnm     int    `json:"omissionNnm"`
 }
 
-func (v *ListSignGameData) GoodsMap() map[int]*Good {
-	m := map[int]*Good{}
+func (v *ListSignGameData) GoodsMap() map[string]*Good {
+	m := map[string]*Good{}
 	for _, good := range v.DisposableGoodsList {
 		m[good.GoodsId] = good
 	}
