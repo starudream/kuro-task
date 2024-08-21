@@ -16,11 +16,21 @@ type Good struct {
 	Type      int    `json:"type,omitempty"`
 	GoodsName string `json:"goodsName"`
 	GoodsNum  int    `json:"goodsNum"`
-	GoodsId   string `json:"goodsId"`
+	GoodsId   GoodId `json:"goodsId,string"`
 	SigInDate string `json:"sigInDate,omitempty"`
 }
 
 type Goods []*Good
+
+type GoodId int
+
+func (v *GoodId) UnmarshalJSON(bs []byte) error {
+	i, err := strconv.Atoi(strings.Trim(string(bs), "\""))
+	if err == nil {
+		*v = GoodId(i)
+	}
+	return err
+}
 
 func (v1 Goods) Today() (v2 Goods) {
 	today := time.Now().Format(time.DateOnly)
@@ -40,10 +50,10 @@ func (v1 Goods) ShortString() string {
 	return strings.Join(v2, ", ")
 }
 
-func (v1 Goods) ShortStringByMap(m map[string]*Good) string {
+func (v1 Goods) ShortStringByMap(m map[int]*Good) string {
 	v2 := make([]string, len(v1))
 	for i, v := range v1 {
-		v2[i] = m[v.GoodsId].GoodsName + "*" + strconv.Itoa(v.GoodsNum)
+		v2[i] = m[int(v.GoodsId)].GoodsName + "*" + strconv.Itoa(v.GoodsNum)
 	}
 	return strings.Join(v2, ", ")
 }
@@ -76,16 +86,16 @@ type ListSignGameData struct {
 	OmissionNnm     int    `json:"omissionNnm"`
 }
 
-func (v *ListSignGameData) GoodsMap() map[string]*Good {
-	m := map[string]*Good{}
+func (v *ListSignGameData) GoodsMap() map[int]*Good {
+	m := map[int]*Good{}
 	for _, good := range v.DisposableGoodsList {
-		m[good.GoodsId] = good
+		m[int(good.GoodsId)] = good
 	}
 	for _, good := range v.SignInGoodsConfigs {
-		m[good.GoodsId] = good
+		m[int(good.GoodsId)] = good
 	}
 	for _, good := range v.SignLoopGoodsList {
-		m[good.GoodsId] = good
+		m[int(good.GoodsId)] = good
 	}
 	return m
 }
