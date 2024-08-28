@@ -50,13 +50,13 @@
         }, function (captcha) {
             captcha.appendTo("#captcha")
             captcha
-                    .onReady(function () {
-                    })
-                    .onSuccess(function () {
-                        $("#result").text(JSON.stringify(captcha.getValidate()))
-                    })
-                    .onError(function () {
-                    })
+                .onReady(function () {
+                })
+                .onSuccess(function () {
+                    $("#result").text(JSON.stringify(captcha.getValidate()))
+                })
+                .onError(function () {
+                })
         })
     })
 </script>
